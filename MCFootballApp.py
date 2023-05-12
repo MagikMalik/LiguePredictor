@@ -56,7 +56,7 @@ def generate_teamids_dict(CreateNew, league):
 
         for k, v in league_team_data.items():
             team_name = league_team_data[k]['title']
-
+            print("TEAM: " + team_name)
             team_id = k
             league_ids[team_name] = team_id
             
@@ -98,8 +98,8 @@ with league_selector:
     if st.session_state.league != league:
         st.session_state.league = league
         list_team = generate_teamids_dict(CreateNew=True,league=league)
-        st.session_state.home_team = list_team[0]
-        st.session_state.away_team = list_team[0]
+        st.session_state.home_team = list(list_team.keys())[0]
+        st.session_state.away_team = list(list_team.keys())[0]
 
         with st.container():
             home_team = st.selectbox('Equipe à domicile:', options=list_team, index=list_team.index(st.session_state.home_team))
