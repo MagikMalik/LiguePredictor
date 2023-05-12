@@ -2,7 +2,6 @@ import streamlit as st
 import seaborn as sns
 from MC_Score_Predictor import MonteCarloMatchSim, buildScoreMatrix
 import matplotlib.pyplot as plt
-from streamlit import SessionState
 
 session_state = SessionState.get(league='', home_team='', away_team='')
 
@@ -87,12 +86,21 @@ with header:
 
 with league_selector:
     league_col = st.columns(1)[0]
-    session_state.league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
+    league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
 
     # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
-    if session_state.league != '':
-        session_state.home_team = st.selectbox('Equipe à domicile:', options=prem_teams, index=0)
-        session_state.away_team = st.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=0)
+    if st.session_state.league != league:
+        st.session_state.league = league
+        st.session_state.home_team = prem_teams[0]
+        st.session_state.away_team = prem_teams[0]
+
+    home_team = st.selectbox('Equipe à domicile:', options=prem_teams, index=prem_teams.index(st.session_state.home_team))
+    away_team = st.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=prem_teams.index(st.session_state.away_team))
+
+    # Mettre à jour les équipes sélectionnées
+    st.session_state.home_team = home_team
+    st.session_state.away_team = away_team
+
 
 with team_selector:
     home_col, away_col = st.columns(2)
