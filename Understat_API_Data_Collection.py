@@ -14,12 +14,12 @@ def cumulative_goal_array(i, team_data_dict, team, goals_for, goals_against, xGA
     return team_data_dict
 
 
-def generate_data_dict_and_team_ID_dict(CreateNew):
+def generate_data_dict_and_team_ID_dict(CreateNew,league):
     if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
         print('Creating New Data Objects')
         with UnderstatClient() as understat:
             print('Attempting to Collect API Data...')
-            league_team_data = understat.league(league='EPL').get_team_data(season="2022")
+            league_team_data = understat.league(league=league).get_team_data(season="2022")
             print('Collected API Data Successfully!')
         data_dict = {}
         prem_team_ids = {}
@@ -78,9 +78,9 @@ def update_data_dict(team, match, home_name, away_name, data_dict, i):
     data_dict[team]['gamesPlayed'] += 1
 
 
-def stat_creator(most_recent_update):
+def stat_creator(most_recent_update,league):
 
-    data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=False) # This loads in the pickle objects. Sequentially update them with just the new GWs data
+    data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=True,league=league) # This loads in the pickle objects. Sequentially update them with just the new GWs data
 
     # we only want to collect match data from the API once per GW.
     # In a GW, we run the programme multiple times to get predictions for different games
