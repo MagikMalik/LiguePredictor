@@ -2,6 +2,7 @@ import streamlit as st
 import seaborn as sns
 from MC_Score_Predictor import MonteCarloMatchSim, buildScoreMatrix
 import matplotlib.pyplot as plt
+from understatapi import UnderstatClient
 
 if 'league' not in st.session_state:
     st.session_state['league'] = ''
