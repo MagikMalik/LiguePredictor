@@ -103,94 +103,94 @@ with league_selector:
         st.session_state.home_team = list(list_team.keys())[0]
         st.session_state.away_team = list(list_team.keys())[0]
 
-        with team_selector:
-            home_col, away_col = st.columns(2)
-            if hasattr(st.session_state, 'list_team'):
-                home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
-                away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
-            else:
-                home_team = home_col.selectbox('Equipe à domicile:')
-                away_team = away_col.selectbox('Equipe à l\'extérieur:')
-            teams = [home_team, away_team]
-
-    with stats_selector:
-        st.markdown('**Paramétrage:**')
-
-        lookback_col, goal_type_col = st.columns(2)
-
-        games_lookback = lookback_col.slider('Combien de matchs historiques pour le calcul?', min_value=2, max_value=6)
-        goal_type = goal_type_col.selectbox('Calcul basé sur G ou xG?', options=['G', 'xG'], index=0)
-
-    glb = games_lookback
-
-    display_button = False
-
-    if goal_type == 'G':
-        use_xg = 'False'
-        display_button = True
+with team_selector:
+    home_col, away_col = st.columns(2)
+    if hasattr(st.session_state, 'list_team'):
+        home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
+        away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
     else:
-        use_xg = 'True'
-        display_button = True
+        home_team = home_col.selectbox('Equipe à domicile:')
+        away_team = away_col.selectbox('Equipe à l\'extérieur:')
+    teams = [home_team, away_team]
 
-    col1, simulation_engine, col3 = st.columns(3)
+with stats_selector:
+    st.markdown('**Paramétrage:**')
 
-    with simulation_engine:
+    lookback_col, goal_type_col = st.columns(2)
 
-        run_button = st.empty()
-        with run_button.container():
+    games_lookback = lookback_col.slider('Combien de matchs historiques pour le calcul?', min_value=2, max_value=6)
+    goal_type = goal_type_col.selectbox('Calcul basé sur G ou xG?', options=['G', 'xG'], index=0)
 
-            submit = False
-            if st.button("Exécuter la simulation"):
-                submit = True
+glb = games_lookback
 
-                if submit:
-                    run_button.empty()
+display_button = False
 
-                home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, HT_GR, AT_GR = MonteCarloMatchSim(teams, 1000000, GamesLookback=int(glb), BaseOnxG=use_xg)
+if goal_type == 'G':
+    use_xg = 'False'
+    display_button = True
+else:
+    use_xg = 'True'
+    display_button = True
 
-        if submit:
-            sim_end_msg = '<p style="font-family:Arial; color:Red; font-size: 14px;">Simulation terminée. Sélectionnez Nouvelles équipes ou modifiez les paramètres pour recommencer !</p>'
-            st.markdown(sim_end_msg, unsafe_allow_html=True)
+col1, simulation_engine, col3 = st.columns(3)
 
-            with score_probabilities:
-                score_matrix = buildScoreMatrix(MC_score_tracker, teams, x, y)
+with simulation_engine:
 
-                st.markdown('**Espérance de buts attendus:**')
-                ht_param, at_param = st.columns(2)
-                ht_param.markdown('**{}** Buts attendus: {}'.format(home_team, round(HT_GR, 3)))
-                at_param.markdown('**{}** Buts attendus: {}'.format(away_team, round(AT_GR, 3)))
+    run_button = st.empty()
+    with run_button.container():
+
+        submit = False
+        if st.button("Exécuter la simulation"):
+            submit = True
+
+            if submit:
+                run_button.empty()
+
+            home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, HT_GR, AT_GR = MonteCarloMatchSim(teams, 1000000, GamesLookback=int(glb), BaseOnxG=use_xg)
+
+    if submit:
+        sim_end_msg = '<p style="font-family:Arial; color:Red; font-size: 14px;">Simulation terminée. Sélectionnez Nouvelles équipes ou modifiez les paramètres pour recommencer !</p>'
+        st.markdown(sim_end_msg, unsafe_allow_html=True)
+
+        with score_probabilities:
+            score_matrix = buildScoreMatrix(MC_score_tracker, teams, x, y)
+
+            st.markdown('**Espérance de buts attendus:**')
+            ht_param, at_param = st.columns(2)
+            ht_param.markdown('**{}** Buts attendus: {}'.format(home_team, round(HT_GR, 3)))
+            at_param.markdown('**{}** Buts attendus: {}'.format(away_team, round(AT_GR, 3)))
 
 
-                st.subheader('Probabilités de score global: ')
+            st.subheader('Probabilités de score global: ')
 
-                # fig, ax = plt.subplots()
-                # sns.heatmap(fig, ax=ax)
-                # st.pyplot(fig)
-                #
-                # # sns.heatmap(score_matrix, annot=True, linewidth=.5, cmap='OrRd', ax=ax)
-                # # st.pyplot(fig)
+            # fig, ax = plt.subplots()
+            # sns.heatmap(fig, ax=ax)
+            # st.pyplot(fig)
+            #
+            # # sns.heatmap(score_matrix, annot=True, linewidth=.5, cmap='OrRd', ax=ax)
+            # # st.pyplot(fig)
 
-                st.dataframe(score_matrix)
-                # st.dataframe(data=score_matrix.style.background_gradient(cmap ='OrRd'))
+            st.dataframe(score_matrix)
+            # st.dataframe(data=score_matrix.style.background_gradient(cmap ='OrRd'))
 
-                #st.dataframe(score_matrix.apply(back_grad))
+            #st.dataframe(score_matrix.apply(back_grad))
 
-                home_win_row = st.container()
-                away_win_row = st.container()
-                draw_row = st.container()
+            home_win_row = st.container()
+            away_win_row = st.container()
+            draw_row = st.container()
 
-                home_win_row.markdown('**{}** Probabilité de pourcentage de victoire = {} %'.format(home_team, round(home_win_prob, 1)))
-                away_win_row.markdown('**{}** Probabilité de pourcentage de victoire = {} %'.format(away_team, round(away_win_prob, 1)))
-                draw_row.markdown('**Nul** Probabilité en pourcentage = {} %'.format(round(draw_prob, 1)))
+            home_win_row.markdown('**{}** Probabilité de pourcentage de victoire = {} %'.format(home_team, round(home_win_prob, 1)))
+            away_win_row.markdown('**{}** Probabilité de pourcentage de victoire = {} %'.format(away_team, round(away_win_prob, 1)))
+            draw_row.markdown('**Nul** Probabilité en pourcentage = {} %'.format(round(draw_prob, 1)))
 
-                with top_three_scores:
+            with top_three_scores:
 
-                    most_likely_score, second_likely_score, third_likely_score = st.columns(3)
-                    ML_score_dict = ML_scores(score_matrix, MC_score_tracker)
+                most_likely_score, second_likely_score, third_likely_score = st.columns(3)
+                ML_score_dict = ML_scores(score_matrix, MC_score_tracker)
 
-                    most_likely_score.markdown('**1er** Score probable - {}: {} %'.format(list(ML_score_dict.keys())[0],
-                                                                                       round(list(ML_score_dict.values())[0], 2)))
-                    second_likely_score.markdown('**2nd** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[1],
-                                                                                        round(list(ML_score_dict.values())[1], 2)))
-                    third_likely_score.markdown('**3eme** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[2],
-                                                                                        round(list(ML_score_dict.values())[2], 2)))
+                most_likely_score.markdown('**1er** Score probable - {}: {} %'.format(list(ML_score_dict.keys())[0],
+                                                                                   round(list(ML_score_dict.values())[0], 2)))
+                second_likely_score.markdown('**2nd** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[1],
+                                                                                    round(list(ML_score_dict.values())[1], 2)))
+                third_likely_score.markdown('**3eme** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[2],
+                                                                                    round(list(ML_score_dict.values())[2], 2)))
