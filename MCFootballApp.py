@@ -84,9 +84,7 @@ st.markdown(
 
 league_List = ['EPL', 'La_liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
 
-list_team = ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 'Chelsea', 'Crystal Palace', 'Everton',
-              'Fulham', 'Leicester', 'Leeds', 'Liverpool', 'Manchester City', 'Manchester United', 'Newcastle United',
-              'Nottingham Forest', 'Southampton', 'Tottenham', 'West Ham', 'Wolverhampton Wanderers']
+list_team = generate_teamids_dict(CreateNew=True,league='EPL')
 
 with header:
     st.title('MagikMalik Match Predictor')
