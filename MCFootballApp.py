@@ -61,12 +61,12 @@ with team_selector:
     away_team = away_col.selectbox('Equipe à l''extérieur:', options=prem_teams, index=0)
 
 with stats_selector:
-    st.markdown('**Choisissez la façon dont nous calculons la moyenne. paramètres d''objectif:**')
+    st.markdown('**Paramétrage:**')
 
     lookback_col, goal_type_col = st.columns(2)
 
-    games_lookback = lookback_col.slider('Combien de match historique pour le calcul?', min_value=2, max_value=6)
-    goal_type = goal_type_col.selectbox('Calculer le taux d''objectif basé sur G ou xG?', options=['G', 'xG'], index=0)
+    games_lookback = lookback_col.slider('Combien de matchs historiques pour le calcul?', min_value=2, max_value=6)
+    goal_type = goal_type_col.selectbox('Calcul basé sur G ou xG?', options=['G', 'xG'], index=0)
 
 teams = [home_team, away_team]
 glb = games_lookback
@@ -88,7 +88,7 @@ with simulation_engine:
     with run_button.container():
 
         submit = False
-        if st.button("Appuyez pour exécuter la simulation"):
+        if st.button("Exécuter la simulation"):
             submit = True
 
             if submit:
@@ -97,16 +97,16 @@ with simulation_engine:
             home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, HT_GR, AT_GR = MonteCarloMatchSim(teams, 1000000, GamesLookback=int(glb), BaseOnxG=use_xg)
 
     if submit:
-        sim_end_msg = '<p style="font-family:Arial; color:Red; font-size: 14px;">Simulation terminée. Sélectionnez Nouvelles équipes ou modifiez les paramètres d''objectif pour recommencer !</p>'
+        sim_end_msg = '<p style="font-family:Arial; color:Red; font-size: 14px;">Simulation terminée. Sélectionnez Nouvelles équipes ou modifiez les paramètres pour recommencer !</p>'
         st.markdown(sim_end_msg, unsafe_allow_html=True)
 
         with score_probabilities:
             score_matrix = buildScoreMatrix(MC_score_tracker, teams, x, y)
 
-            st.markdown('**Paramètres du taux d''objectif calculé:**')
+            st.markdown('**Espérance de buts attendus:**')
             ht_param, at_param = st.columns(2)
-            ht_param.markdown('**{}** Goal Rate Param: {}'.format(home_team, round(HT_GR, 3)))
-            at_param.markdown('**{}** Goal Rate Param: {}'.format(away_team, round(AT_GR, 3)))
+            ht_param.markdown('**{}** Buts attendus: {}'.format(home_team, round(HT_GR, 3)))
+            at_param.markdown('**{}** Buts attendus: {}'.format(away_team, round(AT_GR, 3)))
 
 
             st.subheader('Probabilités de score global: ')
