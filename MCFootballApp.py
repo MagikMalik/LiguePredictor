@@ -2,6 +2,9 @@ import streamlit as st
 import seaborn as sns
 from MC_Score_Predictor import MonteCarloMatchSim, buildScoreMatrix
 import matplotlib.pyplot as plt
+from streamlit import SessionState
+
+session_state = SessionState.get(league='', home_team='', away_team='')
 
 header = st.container()
 league_selector = st.container()
@@ -37,6 +40,30 @@ def ML_scores(score_matrix, MC_Score_tracker):
     print(ML_score_dict)
     return ML_score_dict
 
+def generate_leagueids_dict(CreateNew, league):
+    if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
+        print('Creating New Data Objects')
+        with UnderstatClient() as understat:
+            print('Attempting to Collect API Data...')
+            league_team_data = understat.league(league=league).get_team_data(season="2022")
+            print('Collected API Data Successfully!')
+        league_ids = {}
+
+        for k, v in league_team_data.items():
+            team_name = league_team_data[k]['title']
+
+            team_id = k
+            league_ids[team_name] = team_id
+            
+
+        print('User Created New (Empty) League Pickle Objects')
+        pickle.dump(league_ids, open(league+"Dict.p", 'wb'))
+
+    else:
+        league_ids = pickle.load(open(league+"Dict.p", "rb"))
+
+    return league_ids
+
 
 st.markdown(
     """
@@ -60,12 +87,17 @@ with header:
 
 with league_selector:
     league_col = st.columns(1)[0]
-    league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
+    session_state.league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
+
+    # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
+    if session_state.league != '':
+        session_state.home_team = st.selectbox('Equipe à domicile:', options=prem_teams, index=0)
+        session_state.away_team = st.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=0)
 
 with team_selector:
     home_col, away_col = st.columns(2)
-    home_team = home_col.selectbox('Equipe à domicile:', options=prem_teams, index=0)
-    away_team = away_col.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=0)
+    home_team = home_col.selectbox('Equipe à domicile:', options=prem_teams, index=prem_teams.index(session_state.home_team))
+    away_team = away_col.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=prem_teams.index(session_state.away_team))
 
 with stats_selector:
     st.markdown('**Paramétrage:**')
