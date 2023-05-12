@@ -53,7 +53,7 @@ prem_teams = ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 
               'Nottingham Forest', 'Southampton', 'Tottenham', 'West Ham', 'Wolverhampton Wanderers']
 
 with header:
-    st.title('Welcome to Monte Carlo Bivariate Poisson Match Predictor !')
+    st.title('MgkMlk Match Predictor')
 
 with team_selector:
     st.markdown('** - NOTE - first simulation is slow, as we have to connect to the API to update the stats, but subsequent runs are faster! **')
