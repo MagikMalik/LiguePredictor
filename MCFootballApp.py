@@ -102,10 +102,10 @@ with league_selector:
         st.session_state.away_team = list(list_team.keys())[0]
 
         with st.container():
-            home_team = st.selectbox('Equipe à domicile:', options=list_team, index=list_team.index(st.session_state.home_team))
+            home_team = st.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team))
 
         with st.container():
-            away_team = st.selectbox('Equipe à l\'extérieur:', options=list_team, index=list_team.index(st.session_state.away_team))
+            away_team = st.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team))
 
 
         # Mettre à jour les équipes sélectionnées
