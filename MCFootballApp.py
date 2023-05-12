@@ -59,7 +59,7 @@ with header:
     st.title('MagikMalik Match Predictor')
 
 with league_selector:
-    league_col = st.columns(1)
+    league_col = st.columns(1)[0]
     league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
 
 with team_selector:
