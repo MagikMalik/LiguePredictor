@@ -3,8 +3,6 @@ import seaborn as sns
 from MC_Score_Predictor import MonteCarloMatchSim, buildScoreMatrix
 import matplotlib.pyplot as plt
 
-session_state = SessionState.get(league='', home_team='', away_team='')
-
 header = st.container()
 league_selector = st.container()
 team_selector = st.container()
