@@ -9,6 +9,7 @@ if 'league' not in st.session_state:
     st.session_state['league'] = ''
     st.session_state['home_team'] = ''
     st.session_state['away_team'] = ''
+    st.session_state['list_team'] = ''
 
 
 header = st.container()
@@ -98,14 +99,18 @@ with league_selector:
     if st.session_state.league != league:
         st.session_state.league = league
         list_team = generate_teamids_dict(CreateNew=True,league=league)
+        st.session_state.list_team = list_team
         st.session_state.home_team = list(list_team.keys())[0]
         st.session_state.away_team = list(list_team.keys())[0]
 
         with team_selector:
             home_col, away_col = st.columns(2)
-            home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
-            away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
-
+            if hasattr(st.session_state, 'list_team'):
+                home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
+                away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
+            else:
+                home_team = home_col.selectbox('Equipe à domicile:')
+                away_team = away_col.selectbox('Equipe à l\'extérieur:')
             teams = [home_team, away_team]
 
     with stats_selector:
