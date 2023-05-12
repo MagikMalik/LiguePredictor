@@ -108,8 +108,8 @@ with league_selector:
 
 with team_selector:
     home_col, away_col = st.columns(2)
-    home_team = home_col.selectbox('Equipe à domicile:', options=prem_teams, index=prem_teams.index(session_state.home_team))
-    away_team = away_col.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=prem_teams.index(session_state.away_team))
+    home_team = home_col.selectbox('Equipe à domicile:', options=prem_teams, index=prem_teams.index(st.session_state.home_team))
+    away_team = away_col.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=prem_teams.index(st.session_state.away_team))
 
 with stats_selector:
     st.markdown('**Paramétrage:**')
