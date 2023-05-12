@@ -57,8 +57,8 @@ with header:
 
 with team_selector:
     home_col, away_col = st.columns(2)
-    home_team = home_col.selectbox('Home Team:', options=prem_teams, index=0)
-    away_team = away_col.selectbox('Away Team:', options=prem_teams, index=0)
+    home_team = home_col.selectbox('Equipe à domicile:', options=prem_teams, index=0)
+    away_team = away_col.selectbox('Equipe à l''extérieur:', options=prem_teams, index=0)
 
 with stats_selector:
     st.markdown('**Choisissez la façon dont nous calculons la moyenne. paramètres d''objectif:**')
