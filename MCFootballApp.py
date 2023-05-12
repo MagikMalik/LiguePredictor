@@ -101,11 +101,12 @@ with league_selector:
         st.session_state.home_team = list(list_team.keys())[0]
         st.session_state.away_team = list(list_team.keys())[0]
 
-with team_selector:
-    home_col, away_col = st.columns(2)
-    home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
-    away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
+        with team_selector:
+            home_col, away_col = st.columns(2)
+            home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
+            away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
 
+            teams = [home_team, away_team]
 
 with stats_selector:
     st.markdown('**Paramétrage:**')
@@ -115,7 +116,6 @@ with stats_selector:
     games_lookback = lookback_col.slider('Combien de matchs historiques pour le calcul?', min_value=2, max_value=6)
     goal_type = goal_type_col.selectbox('Calcul basé sur G ou xG?', options=['G', 'xG'], index=0)
 
-teams = [home_team, away_team]
 glb = games_lookback
 
 display_button = False
