@@ -60,7 +60,7 @@ with header:
 
 with league_selector:
     league_col = st.columns(1)
-    league = home_col.selectbox('Choisir une ligue:', options=league_List, index=0)
+    league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
 
 with team_selector:
     home_col, away_col = st.columns(2)
