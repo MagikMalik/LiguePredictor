@@ -7,33 +7,8 @@ from Understat_API_Data_Collection import *
 from math import comb
 from random import choices
 
-# Workflow.
-# get input of the 2 teams which are playing
-#
-# connects to API and get league table for each match day up to now
-#
-# for each team, calculate the vector of (x)G weightings & build the (x)G vector for each matchday
-# calculate weighted xG sum average
-# feed into monte carlo model & run -> do rest of calculations
-
-# Good Paper I found on BivPo modelling:
-# https://www.jstor.org/stable/4128211?saml_data=eyJzYW1sVG9rZW4iOiIyNGM4MmRkMy03MjdiLTRjNzUtODFkNS1mNWQ0ZTUyZmNiNjQiLCJlbWFpbCI6InptaHQyQGNhbS5hYy51ayIsImluc3RpdHV0aW9uSWRzIjpbIjNhMWY4MjRiLWUzNzUtNDQ3Mi05YTc3LTg4NmMyODA3OTJiOCJdfQ&seq=10#metadata_info_tab_contents
-
-#TODO: Improvements; Met Hastings MC sampling? Create own markov chain for win-draw-loss sequences?
 
 def BivariatePoissonProb(x, y, l1, l2, l3):
-    '''
-    This function implements the bivariate poisson probability distribution
-
-    :param x: home goals scored
-    :param y: away goals scored
-    :param l1: average predicted home goals scored
-    :param l2: average predicted away goals scored
-    :param l3: covariance between average goal predictions - can be thought of as 'match speed/conditions'
-                higher l3 value results in a higher scoring game
-    :return: a probability for that scoreline, given by the bivariate poisson distribution
-    '''
-
     summation_term = 0
     for i in range(min(x,y) + 1):
         summation_term += comb(x, i)*comb(y, i)*np.math.factorial(i)*(( l3 / l1*l2 )**i)
@@ -44,16 +19,6 @@ def BivariatePoissonProb(x, y, l1, l2, l3):
 
 # function to generate the probability distribution for home_Gf and away_Gf (and l3), then sample from it to get integers
 def GenerateProbDistr(l1, l2, l3):
-    '''
-    This function generates a probability distribution for each scoreline up to 6-6
-
-    :param l1: the Predicted Home Goals Scored
-    :param l2: the Predicted Away Goals Scored
-    :param l3: the Covariance between the Home Goals and Away Goals
-
-    :return: a dictionary with of the form scoreline : probability of occurance
-    '''
-
     # x, y can be thought of as a co-ordinate set of all possible score combinations for a match
     x = np.linspace(0,6,7)
     y = np.linspace(0,6,7)
@@ -64,7 +29,6 @@ def GenerateProbDistr(l1, l2, l3):
             home_score = int(i)
             away_score = int(j)
             score = (home_score, away_score)
-            # now evaluate the Bivariate Po at this co-ordinate (x,y) with inputs l1, l2 (weighted (x)G average) and covariance l3
             score_prob_dict[score] = BivariatePoissonProb(home_score, away_score, l1, l2, l3)
 
     return score_prob_dict, x, y
@@ -135,12 +99,12 @@ def print_results(func, teams):
                                                                round(100 / draw_prob - 1, 2)))
     return score_matrix, ML_score_dict
 
-def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG):
+def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
 
     # Loads in the last time we updated the stats.
     most_recent_run = pickle.load(open("MostRecentRun.p", "rb"))
 
-    teams_data_dict = stat_creator(most_recent_run)
+    teams_data_dict = stat_creator(most_recent_run,league)
 
     avg_weighted_goals_HomeTeam, avg_weighted_goals_AwayTeam, wtd_goal_series = get_weighted_goals(GamesLookback, teams,
                                                                                                    teams_data_dict,
