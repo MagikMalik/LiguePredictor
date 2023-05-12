@@ -4,6 +4,7 @@ from MC_Score_Predictor import MonteCarloMatchSim, buildScoreMatrix
 import matplotlib.pyplot as plt
 
 header = st.container()
+league_selector = st.container()
 team_selector = st.container()
 stats_selector = st.container()
 simulation_engine = st.container()
@@ -48,6 +49,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+league_List = ['EPL', 'La_liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
+
 prem_teams = ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 'Chelsea', 'Crystal Palace', 'Everton',
               'Fulham', 'Leicester', 'Leeds', 'Liverpool', 'Manchester City', 'Manchester United', 'Newcastle United',
               'Nottingham Forest', 'Southampton', 'Tottenham', 'West Ham', 'Wolverhampton Wanderers']
@@ -55,10 +58,14 @@ prem_teams = ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 
 with header:
     st.title('MagikMalik Match Predictor')
 
+with league_selector:
+    league_col = st.columns(1)
+    league = home_col.selectbox('Choisir une ligue:', options=league_List, index=0)
+
 with team_selector:
     home_col, away_col = st.columns(2)
     home_team = home_col.selectbox('Equipe à domicile:', options=prem_teams, index=0)
-    away_team = away_col.selectbox('Equipe à l''extérieur:', options=prem_teams, index=0)
+    away_team = away_col.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=0)
 
 with stats_selector:
     st.markdown('**Paramétrage:**')
@@ -142,4 +149,3 @@ with simulation_engine:
                                                                                     round(list(ML_score_dict.values())[1], 2)))
                 third_likely_score.markdown('**3eme** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[2],
                                                                                     round(list(ML_score_dict.values())[2], 2)))
-
