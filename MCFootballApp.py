@@ -95,7 +95,7 @@ with league_selector:
     # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
     if st.session_state.league != league:
         st.session_state.league = league
-        list_team = generate_teamids_dict(CreateNew=True,league)
+        list_team = generate_teamids_dict(CreateNew=True,league=league)
         st.session_state.home_team = list_team[0]
         st.session_state.away_team = list_team[0]
 
