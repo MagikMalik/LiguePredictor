@@ -56,19 +56,17 @@ with header:
     st.title('MgkMlk Match Predictor')
 
 with team_selector:
-    st.markdown('** - NOTE - first simulation is slow, as we have to connect to the API to update the stats, but subsequent runs are faster! **')
-    st.markdown('**Choose the Home Team and Away Team from the dropdown:**')
     home_col, away_col = st.columns(2)
     home_team = home_col.selectbox('Home Team:', options=prem_teams, index=0)
     away_team = away_col.selectbox('Away Team:', options=prem_teams, index=0)
 
 with stats_selector:
-    st.markdown('**Choose the way how we calculate avg. goal parameters:**')
+    st.markdown('**Choisissez la façon dont nous calculons la moyenne. paramètres d''objectif:**')
 
     lookback_col, goal_type_col = st.columns(2)
 
-    games_lookback = lookback_col.slider('How Many Games Shall We LookBack?', min_value=2, max_value=6)
-    goal_type = goal_type_col.selectbox('Calculate Goal Rate Based on G or xG?', options=['G', 'xG'], index=0)
+    games_lookback = lookback_col.slider('Combien de match historique pour le calcul?', min_value=2, max_value=6)
+    goal_type = goal_type_col.selectbox('Calculer le taux d'objectif basé sur G ou xG?', options=['G', 'xG'], index=0)
 
 teams = [home_team, away_team]
 glb = games_lookback
