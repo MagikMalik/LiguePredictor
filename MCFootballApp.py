@@ -43,7 +43,7 @@ def ML_scores(score_matrix, MC_Score_tracker):
     print(ML_score_dict)
     return ML_score_dict
 
-def generate_leagueids_dict(CreateNew, league):
+def generate_teamids_dict(CreateNew, league):
     if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
         print('Creating New Data Objects')
         with UnderstatClient() as understat:
@@ -95,11 +95,12 @@ with league_selector:
     # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
     if st.session_state.league != league:
         st.session_state.league = league
-        st.session_state.home_team = prem_teams[0]
-        st.session_state.away_team = prem_teams[0]
+        list_team = generate_teamids_dict(CreateNew=True,league)
+        st.session_state.home_team = list_team[0]
+        st.session_state.away_team = list_team[0]
 
-    home_team = st.selectbox('Equipe à domicile:', options=prem_teams, index=prem_teams.index(st.session_state.home_team))
-    away_team = st.selectbox('Equipe à l\'extérieur:', options=prem_teams, index=prem_teams.index(st.session_state.away_team))
+    home_team = st.selectbox('Equipe à domicile:', options=list_team, index=list_team.index(st.session_state.home_team))
+    away_team = st.selectbox('Equipe à l\'extérieur:', options=list_team, index=list_team.index(st.session_state.away_team))
 
     # Mettre à jour les équipes sélectionnées
     st.session_state.home_team = home_team
