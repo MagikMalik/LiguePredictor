@@ -195,7 +195,7 @@ def get_weighted_goals(games_lookback, teams, team_data_dict, Use_xG):
             avg_wtd_goal_HomeTeam = wtd_goal / games_lookback
         else:
             avg_wtd_goal_AwayTeam = wtd_goal / games_lookback
-
+    print(team)
     if avg_wtd_goal_HomeTeam == 0.0 or avg_wtd_goal_AwayTeam == 0.0:
         raise ValueError('The Weighted Average Goals Were Not Computed Correctly For the Teams in Question')
 
