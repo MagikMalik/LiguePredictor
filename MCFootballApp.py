@@ -57,7 +57,6 @@ def generate_teamids_dict(CreateNew, league):
 
         for k, v in league_team_data.items():
             team_name = league_team_data[k]['title']
-            print("TEAM: " + team_name)
             team_id = k
             league_ids[team_name] = team_id
             
@@ -110,7 +109,8 @@ with team_selector:
     else:
         home_team = home_col.selectbox('Equipe à domicile:')
         away_team = away_col.selectbox('Equipe à l\'extérieur:')
-
+    print("dom: " + home_team)
+    print("ext: " + away_team)
 teams = [home_team, away_team]
 
 with stats_selector:
@@ -145,8 +145,6 @@ with simulation_engine:
 
             if submit:
                 run_button.empty()
-            print("dom: " + teams[0])
-            print("ext: " + teams[1])
             home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, HT_GR, AT_GR = MonteCarloMatchSim(teams, 1000000, GamesLookback=int(glb), BaseOnxG=use_xg,league=league)
 
     if submit:
