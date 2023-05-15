@@ -43,13 +43,13 @@ def generate_data_dict_and_team_ID_dict(CreateNew,league):
                                     'played_matches':[float('NaN')] * 38}
 
         print('User Created New (Empty) Pickle Objects')
-        pickle.dump(data_dict, open('TeamDataDict.p', 'wb'))
-        pickle.dump(prem_team_ids, open('PremTeamIDs.p', 'wb'))
+        pickle.dump(data_dict, open(league+'DataDict.p', 'wb'))
+        pickle.dump(prem_team_ids, open(league+'TeamIDs.p', 'wb'))
 
     else:
         print('Loading Pickles (Existing Data Objects of Football Stats)')
-        prem_team_ids = pickle.load(open("PremTeamIDs.p", "rb"))
-        data_dict = pickle.load(open("TeamDataDict.p", "rb"))
+        prem_team_ids = pickle.load(open(league+"TeamIDs.p", "rb"))
+        data_dict = pickle.load(open(league+"DataDict.p", "rb"))
 
     return data_dict, prem_team_ids
 
@@ -80,7 +80,7 @@ def update_data_dict(team, match, home_name, away_name, data_dict, i):
 
 def stat_creator(most_recent_update,league):
 
-    data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=True,league=league) # This loads in the pickle objects. Sequentially update them with just the new GWs data
+    data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=False,league=league) # This loads in the pickle objects. Sequentially update them with just the new GWs data
 
     # we only want to collect match data from the API once per GW.
     # In a GW, we run the programme multiple times to get predictions for different games
