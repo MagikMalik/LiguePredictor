@@ -63,10 +63,10 @@ def generate_teamids_dict(CreateNew, league):
             
 
         print('User Created New (Empty) League Pickle Objects')
-        pickle.dump(league_ids, open(league+"Dict.p", 'wb'))
+        pickle.dump(league_ids, open(league+"TeamIDs.p", 'wb'))
 
     else:
-        league_ids = pickle.load(open(league+"Dict.p", "rb"))
+        league_ids = pickle.load(open(league+"TeamIDs.p", "rb"))
 
     return league_ids
 
@@ -82,7 +82,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-league_List = ['EPL', 'La_liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
+league_List = ['EPL', 'La_Liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
 
 list_team = generate_teamids_dict(CreateNew=True,league='EPL')
 
