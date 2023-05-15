@@ -3,7 +3,6 @@ from understatapi import UnderstatClient
 import numpy as np
 import pickle
 
-
 def cumulative_goal_array(i, team_data_dict, team, goals_for, goals_against, xGA, xGF):
     team_data_dict[team]['cGA'][i] = int(goals_against) + int(team_data_dict[team]['cGA'][i - 1]) if i != 0 else int(goals_against)
     team_data_dict[team]['cGF'][i] = int(goals_for) + int(team_data_dict[team]['cGF'][i - 1]) if i !=0 else int(goals_for)
