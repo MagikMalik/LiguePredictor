@@ -84,7 +84,7 @@ st.markdown(
 
 league_List = ['EPL', 'La_Liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
 
-list_team = generate_teamids_dict(CreateNew=True,league='EPL')
+list_team = generate_teamids_dict(CreateNew=False,league='EPL')
 
 with header:
     st.title('MagikMalik Match Predictor')
@@ -96,14 +96,14 @@ with league_selector:
     # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
     if st.session_state.league != league:
         st.session_state.league = league
-        list_team = generate_teamids_dict(CreateNew=True,league=league)
+        list_team = generate_teamids_dict(CreateNew=False,league=league)
         st.session_state.list_team = list_team
         st.session_state.home_team = list(list_team.keys())[0]
         st.session_state.away_team = list(list_team.keys())[0]
 
 with team_selector:
     home_col, away_col = st.columns(2)
-    list_team = generate_teamids_dict(CreateNew=True,league=league)
+    list_team = generate_teamids_dict(CreateNew=False,league=league)
     if hasattr(st.session_state, 'list_team'):
         home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
         away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
