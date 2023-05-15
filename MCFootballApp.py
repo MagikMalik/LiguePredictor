@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from understatapi import UnderstatClient
 import pickle
 
-
 if 'league' not in st.session_state:
     st.session_state['league'] = ''
     st.session_state['home_team'] = ''
@@ -146,7 +145,8 @@ with simulation_engine:
 
             if submit:
                 run_button.empty()
-
+            print("dom: " + teams[0])
+            print("ext: " + teams[1])
             home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, HT_GR, AT_GR = MonteCarloMatchSim(teams, 1000000, GamesLookback=int(glb), BaseOnxG=use_xg,league=league)
 
     if submit:
