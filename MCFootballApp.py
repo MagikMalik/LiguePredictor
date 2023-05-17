@@ -43,7 +43,6 @@ def ML_scores(score_matrix, MC_Score_tracker):
         ML_percent = max_likelihood_percent(MC_score_tracker)
         ML_score_dict[ML_score] = ML_percent/10000
 
-    print(ML_score_dict)
     return ML_score_dict
 
 def generate_teamids_dict(CreateNew, league):
@@ -83,7 +82,7 @@ st.markdown(
 
 league_List = ['EPL', 'La_Liga', 'Bundesliga', 'Serie_A', 'Ligue_1', 'RFPL']
 
-list_team = generate_teamids_dict(CreateNew=False,league='EPL')
+list_team = generate_teamids_dict(CreateNew=False,league='La_Liga')
 
 with header:
     st.title('MagikMalik Match Predictor')
@@ -98,7 +97,7 @@ with league_selector:
         list_team = generate_teamids_dict(CreateNew=False,league=league)
         st.session_state.list_team = list_team
         st.session_state.home_team = list(list_team.keys())[0]
-        st.session_state.away_team = list(list_team.keys())[0]
+        st.session_state.away_team = list(list_team.keys())[1]
 
 with team_selector:
     home_col, away_col = st.columns(2)
@@ -118,8 +117,8 @@ with stats_selector:
 
     lookback_col, goal_type_col = st.columns(2)
 
-    games_lookback = lookback_col.slider('Combien de matchs historiques pour le calcul?', min_value=2, max_value=6)
-    goal_type = goal_type_col.selectbox('Calcul basé sur G ou xG?', options=['G', 'xG'], index=0)
+    games_lookback = lookback_col.slider('Combien de matchs historiques pour le calcul?', min_value=2, max_value=10, value=10)
+    goal_type = goal_type_col.selectbox('Calcul basé sur les buts réels(G) ou sur l\'espérance de buts(xG)?', options=['G', 'xG'], index=1)
 
 glb = games_lookback
 
@@ -160,7 +159,7 @@ with simulation_engine:
             at_param.markdown('**{}** Buts attendus: {}'.format(away_team, round(AT_GR, 3)))
 
 
-            st.subheader('Probabilités de score global: ')
+            st.subheader('Probabilités du nombre de buts: ')
 
             # fig, ax = plt.subplots()
             # sns.heatmap(fig, ax=ax)
@@ -178,9 +177,9 @@ with simulation_engine:
             away_win_row = st.container()
             draw_row = st.container()
 
-            home_win_row.markdown('**{}** Probabilité de pourcentage de victoire = {} %'.format(home_team, round(home_win_prob, 1)))
-            away_win_row.markdown('**{}** Probabilité de pourcentage de victoire = {} %'.format(away_team, round(away_win_prob, 1)))
-            draw_row.markdown('**Nul** Probabilité en pourcentage = {} %'.format(round(draw_prob, 1)))
+            home_win_row.markdown('**{}** Probabilité de victoire = {} %'.format(home_team, round(home_win_prob, 1)))
+            away_win_row.markdown('**{}** Probabilité de victoire = {} %'.format(away_team, round(away_win_prob, 1)))
+            draw_row.markdown('**Nul** Probabilité du nul = {} %'.format(round(draw_prob, 1)))
 
             with top_three_scores:
 
