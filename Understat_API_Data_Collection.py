@@ -3,6 +3,7 @@ from understatapi import UnderstatClient
 import numpy as np
 import pickle
 
+
 def cumulative_goal_array(i, team_data_dict, team, goals_for, goals_against, xGA, xGF):
     team_data_dict[team]['cGA'][i] = int(goals_against) + int(team_data_dict[team]['cGA'][i - 1]) if i != 0 else int(goals_against)
     team_data_dict[team]['cGF'][i] = int(goals_for) + int(team_data_dict[team]['cGF'][i - 1]) if i !=0 else int(goals_for)
@@ -196,7 +197,7 @@ def get_weighted_goals(games_lookback, teams, team_data_dict, Use_xG):
             avg_wtd_goal_AwayTeam = wtd_goal / games_lookback
         print(team)
     if avg_wtd_goal_HomeTeam == 0.0 or avg_wtd_goal_AwayTeam == 0.0:
-        raise ValueError('The Weighted Average Goals Were Not Computed Correctly For the Teams in Question/' + teams[0]+'/'+teams[1])
+        raise ValueError('The Weighted Average Goals Were Not Computed Correctly For the Teams in Question/' + teams[0]+'/'+teams[1]+'/'+games_lookback+'/'+games_played+'/'+wtd_goal)
 
     return avg_wtd_goal_HomeTeam, avg_wtd_goal_AwayTeam, wtd_goal_series
 
