@@ -29,6 +29,7 @@ def generate_data_dict_and_team_ID_dict(CreateNew,league):
 
             team_id = k
             prem_team_ids[team_name] = team_id
+            data_dict['updatedate'] = pd.Timestamp.today().date()
             data_dict[team_name] = {'id': team_id,
                                      'gamesPlayed': 0,
                                      'opponent': [float('NaN')] * 38,
@@ -78,7 +79,7 @@ def update_data_dict(team, match, home_name, away_name, data_dict, i):
     data_dict[team]['gamesPlayed'] += 1
 
 
-def stat_creator(most_recent_update,league):
+def stat_creator(league):
 
     data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=False,league=league) # This loads in the pickle objects. Sequentially update them with just the new GWs data
 
@@ -86,11 +87,9 @@ def stat_creator(most_recent_update,league):
     # In a GW, we run the programme multiple times to get predictions for different games
     # So, need a flag to tell us when the last time we ran
 
-    print(most_recent_update)
-
-    if most_recent_update.date() < pd.Timestamp.today().date():
-        print('Updating the Data Dictionary With New Stats! Last Update = {}'.format(most_recent_update))
-
+    if data_dict['updatedate'] < pd.Timestamp.today().date():
+        print('Updating the Data Dictionary With New Stats! Last Update = {}'.format(data_dict))
+        data_dict['updatedate'] = pd.Timestamp.today().date()
         for team in list(prem_team_ids.keys()): # This gets match data
             with UnderstatClient() as understat:
                 print('Attempting to Collect API Data For {}...'.format(team))
