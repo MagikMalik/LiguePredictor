@@ -134,7 +134,7 @@ def stat_creator(most_recent_update,league):
                     continue
 
         print('Generated Updated Stats - Now Saving ...')
-        pickle.dump(data_dict, open('TeamDataDict.p', 'wb'))
+        pickle.dump(data_dict, open(league+'DataDict.p', 'wb'))
         print('Pickled & Saved UPDATED Team Data Dict Succesfully')
     else:
         print('No Need To Update Stats Again, as Already Ran The Update Today.')
