@@ -14,14 +14,14 @@ def BivariatePoissonProb(x, y, l1, l2, l3):
         summation_term += comb(x, i)*comb(y, i)*np.math.factorial(i)*(( l3 / l1*l2 )**i)
 
     prob = float(np.exp(-(l1+l2+l3)) * (l1**x)/np.math.factorial(x) * (l2**y)/np.math.factorial(y) * summation_term)
-    return prob
+    return round(prob,2)
 
 
 # function to generate the probability distribution for home_Gf and away_Gf (and l3), then sample from it to get integers
 def GenerateProbDistr(l1, l2, l3):
     # x, y can be thought of as a co-ordinate set of all possible score combinations for a match
-    x = np.linspace(0,6,7)
-    y = np.linspace(0,6,7)
+    x = np.linspace(0,5,6)
+    y = np.linspace(0,5,6)
 
     score_prob_dict = {}
     for i in x:
@@ -29,7 +29,7 @@ def GenerateProbDistr(l1, l2, l3):
             home_score = int(i)
             away_score = int(j)
             score = (home_score, away_score)
-            score_prob_dict[score] = BivariatePoissonProb(home_score, away_score, l1, l2, l3)
+            score_prob_dict[score] = round(BivariatePoissonProb(home_score, away_score, l1, l2, l3),2)
 
     return score_prob_dict, x, y
 
@@ -44,7 +44,7 @@ def buildScoreMatrix(MC_score_tracker, teams, x, y):
 
     score_matrix = pd.DataFrame(columns=away_multidx, index=home_multidx)
     for score, frequency in MC_score_tracker.items():
-        score_matrix.loc[(teams[0], score[0])][(teams[1], score[1])] = round(float((frequency / np.sum(list(MC_score_tracker.values())))*100), 3)
+        score_matrix.loc[(teams[0], score[0])][(teams[1], score[1])] = round(float((frequency / np.sum(list(MC_score_tracker.values())))*100), 2)
 
     print(score_matrix)
     SM = score_matrix.droplevel(level=0, axis=0)
@@ -102,10 +102,8 @@ def print_results(func, teams):
 def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
 
     # Loads in the last time we updated the stats.
-    most_recent_run = pickle.load(open(league+"RecentRun.p", "rb"))
-
-    teams_data_dict = stat_creator(most_recent_run,league)
-
+    teams_data_dict = stat_creator(league)
+    print(teams_data_dict)
     avg_weighted_goals_HomeTeam, avg_weighted_goals_AwayTeam, wtd_goal_series = get_weighted_goals(GamesLookback, teams,
                                                                                                    teams_data_dict,
                                                                                                     Use_xG=BaseOnxG)
@@ -124,7 +122,7 @@ def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
     print('goal cov = {}'.format(l3))
     print('\n')
 
-    score_prob_dict, x, y = GenerateProbDistr(avg_weighted_goals_HomeTeam, avg_weighted_goals_AwayTeam, l3)
+    score_prob_dict, x, y = GenerateProbDistr(round(avg_weighted_goals_HomeTeam,2), round(avg_weighted_goals_AwayTeam,2), l3)
     MC_score_tracker = {k:v for k,v in zip(list(score_prob_dict.keys()), [0]*len(score_prob_dict))}
     MC_win_tracker = {'HW': 0, 'AW': 0, 'D':0}
     for i in range(iterations):
@@ -132,56 +130,23 @@ def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
             print('Iteration: {} / {}. Completion: {}%'.format(i, iterations, (i/iterations) * 100))
 
         sampled_score = choices(list(score_prob_dict.keys()), weights=list(score_prob_dict.values()))[0]
-        MC_score_tracker[sampled_score] += 1
+        MC_score_tracker[sampled_score] += 1        
         if sampled_score[0] > sampled_score[1]:
             MC_win_tracker['HW'] += 1
         if sampled_score[0] < sampled_score[1]:
             MC_win_tracker['AW'] += 1
         else:
             MC_win_tracker['D'] += 1
+    print(MC_score_tracker)
     print('Iteration: {} / {}. Completion: 100%'.format(iterations, iterations))
 
-    home_win_prob = (MC_win_tracker['HW'] / iterations) * 100
-    away_win_prob = (MC_win_tracker['AW'] / iterations) * 100
-    draw_prob = 100 - home_win_prob - away_win_prob
+    home_win_prob = round((MC_win_tracker['HW'] / iterations) * 100,2)
+    away_win_prob = round((MC_win_tracker['AW'] / iterations) * 100,2)
+    draw_prob = round(100 - home_win_prob - away_win_prob,2)
 
-    # Pickle the date that we ran it.
-    most_recent_run = pd.Timestamp.today()
-    pickle.dump(most_recent_run, open(league+'RecentRun.p', 'wb'))
-
-    return home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, avg_weighted_goals_HomeTeam, avg_weighted_goals_AwayTeam
+    return round(home_win_prob,2), round(away_win_prob,2), round(draw_prob,2), MC_score_tracker, x, y, round(avg_weighted_goals_HomeTeam,2), round(avg_weighted_goals_AwayTeam,2)
 
     #present scores in a nice matrix of probabilities
     #convert to odds
 
 #home_win_prob, away_win_prob, draw_prob = MonteCarloMatchSim(['Manchester City', 'Tottenham'], 100000, GamesLookback=3, BaseOnxG=False)
-
-
-
-
-# Rationale: weighting tan function to reflect linear relationship for weights above (and below 1) for a small period then tail off
-# either end, as having a very high weighting is unrealistic.
-# And, for weightings larger than 1, this reduces faster/slower than weightings less than 1 because of xyz..
-
-# Had to find an API to extract the data and then store it in the way which I wanted
-
-
-def master():
-    homeTeam = input('Please Enter HOME Team: ')
-    awayTeam = input('Please Enter AWAY Team: ')
-    teams = [homeTeam, awayTeam]
-
-    glb = input('How Many Games Do You Wish To Look-Back to Calculate Goal Rate?:')
-    use_xg = input('Enter True if You Wish To Forecast Using xG, False if Real Goals Scored: ')
-    print('\n')
-
-    score_matrix, ML_score = print_results(MonteCarloMatchSim(teams, 1000000, GamesLookback=int(glb), BaseOnxG=use_xg), teams)
-
-    return score_matrix
-
-    print('TODO: Change teh file location of the pickled date object')
-
-# master()
-
-
-# TODO: Add a Home Advantage term to the goal parameter of each team.
