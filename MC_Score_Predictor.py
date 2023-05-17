@@ -102,7 +102,7 @@ def print_results(func, teams):
 def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
 
     # Loads in the last time we updated the stats.
-    most_recent_run = pickle.load(open("MostRecentRun.p", "rb"))
+    most_recent_run = pickle.load(open(league+"RecentRun.p", "rb"))
 
     teams_data_dict = stat_creator(most_recent_run,league)
 
@@ -147,7 +147,7 @@ def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
 
     # Pickle the date that we ran it.
     most_recent_run = pd.Timestamp.today()
-    pickle.dump(most_recent_run, open('MostRecentRun.p', 'wb'))
+    pickle.dump(most_recent_run, open(league+'RecentRun.p', 'wb'))
 
     return home_win_prob, away_win_prob, draw_prob, MC_score_tracker, x, y, avg_weighted_goals_HomeTeam, avg_weighted_goals_AwayTeam
 
