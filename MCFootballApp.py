@@ -6,12 +6,19 @@ from understatapi import UnderstatClient
 import pickle
 import streamlit as st
 import os
+from dotenv import load_dotenv
 
 # Définir les informations d'authentification prédéfinies
-USERNAME = 'Betstake'
-PASSWORD = 'init1234'
-USERNAME2 = 'HRP'
-PASSWORD2 = '1H2R3P4'
+# Charger les variables d'environnement à partir du fichier .env
+load_dotenv()
+
+# Récupérer les valeurs des variables d'environnement
+USERNAME = os.getenv("MGKMLKUSER")
+PASSWORD = os.getenv("MGKMLKPASS")
+USERNAME2 = os.getenv("MGKMLKUSER2")
+PASSWORD2 = os.getenv("MGKMLKPASS2")
+print(USERNAME)
+
 def main():
     if 'league' not in st.session_state:
         st.session_state['league'] = ''
