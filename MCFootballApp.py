@@ -9,7 +9,8 @@ import streamlit as st
 # Définir les informations d'authentification prédéfinies
 USERNAME = 'Betstake'
 PASSWORD = 'init1234'
-
+USERNAME2 = 'HRP'
+PASSWORD2 = '1H2R3P4'
 def main():
     if 'league' not in st.session_state:
         st.session_state['league'] = ''
@@ -224,7 +225,7 @@ st.markdown(
     unsafe_allow_html=True
     )
 if st.sidebar.button("Se connecter"):
-    if username_input == USERNAME and password_input == PASSWORD:
+    if (username_input == USERNAME and password_input == PASSWORD) or (username_input == USERNAME2 and password_input == PASSWORD2):
         st.markdown(
         """
         <style>
@@ -240,7 +241,7 @@ if st.sidebar.button("Se connecter"):
         # Les informations d'authentification sont incorrectes, afficher un message d'erreur
         if username_input != '' and password_input != '':
             st.sidebar.error('Identifiants invalides. Veuillez réessayer.')
-elif username_input == USERNAME and password_input == PASSWORD:
+elif (username_input == USERNAME and password_input == PASSWORD) or (username_input == USERNAME2 and password_input == PASSWORD2):
     st.markdown(
     """
     <style>
