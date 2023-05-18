@@ -204,9 +204,9 @@ def main():
 
                 with top_three_scores:
 
+                    likelyscore = st.container()
                     most_likely_score, second_likely_score, third_likely_score = st.columns(3)
                     ML_score_dict = ML_scores(score_matrix, MC_score_tracker)
-                    likelyscore = st.container()
 
                     likelyscore.markdown('**Scores les plus probable**')
                     most_likely_score.markdown('**1/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[0],
