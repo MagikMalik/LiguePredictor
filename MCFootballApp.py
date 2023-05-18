@@ -7,12 +7,10 @@ import pickle
 import streamlit as st
 import os
 
-# Récupérer les valeurs des variables d'environnement
 USERNAME = st.secrets["MGKMLKUSER"]
 PASSWORD = st.secrets["MGKMLKPASS"]
 USERNAME2 = st.secrets["MGKMLKUSER2"]
 PASSWORD2 = st.secrets["MGKMLKPASS2"]
-print(USERNAME)
 
 
 def main():
