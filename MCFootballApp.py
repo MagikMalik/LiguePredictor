@@ -7,10 +7,12 @@ import pickle
 import streamlit as st
 import os
 
+# Récupérer les valeurs des variables d'environnement
 USERNAME = st.secrets["MGKMLKUSER"]
 PASSWORD = st.secrets["MGKMLKPASS"]
 USERNAME2 = st.secrets["MGKMLKUSER2"]
 PASSWORD2 = st.secrets["MGKMLKPASS2"]
+print(USERNAME)
 
 
 def main():
@@ -55,7 +57,7 @@ def main():
         return ML_score_dict
 
     def generate_teamids_dict(CreateNew, league):
-        if CreateNew: # Create new team data, and a new empty data dictionary - set CreateNew to True at the start of each season
+        if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
             print('Creating New Data Objects')
             with UnderstatClient() as understat:
                 print('Attempting to Collect API Data...')
@@ -106,7 +108,7 @@ def main():
 
     with league_selector:
         league_col = st.columns(1)[0]
-        league = league_col.selectbox('Choisir une ligue:', options=sorted(league_List), index=0)
+        league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
 
         # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
         if st.session_state.league != league:
@@ -120,8 +122,8 @@ def main():
         home_col, away_col = st.columns(2)
         list_team = generate_teamids_dict(CreateNew=False,league=league)
         if hasattr(st.session_state, 'list_team'):
-            home_team = home_col.selectbox('Equipe à domicile:', options=sorted(list(list_team.keys())), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
-            away_team = away_col.selectbox('Equipe à l\'extérieur:', options=sorted(list(list_team.keys())), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
+            home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
+            away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
         else:
             home_team = home_col.selectbox('Equipe à domicile:')
             away_team = away_col.selectbox('Equipe à l\'extérieur:')
