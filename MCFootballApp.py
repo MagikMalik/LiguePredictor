@@ -55,7 +55,7 @@ def main():
         return ML_score_dict
 
     def generate_teamids_dict(CreateNew, league):
-        if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
+        if CreateNew: # Create new team data, and a new empty data dictionary - set CreateNew to True at the start of each season
             print('Creating New Data Objects')
             with UnderstatClient() as understat:
                 print('Attempting to Collect API Data...')
