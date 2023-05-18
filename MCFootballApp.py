@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from understatapi import UnderstatClient
 import pickle
 import streamlit as st
+import os
 
 # Définir les informations d'authentification prédéfinies
 USERNAME = 'Betstake'
@@ -92,9 +93,12 @@ def main():
     list_team = generate_teamids_dict(CreateNew=False,league='La_Liga')
 
     with header:
-        # Charger l'image PNG rognée en forme de rond
-        image_url = "MagikMalikAvatar.png"
-        rounded_image_html = '<img src="{}" style="border-radius: 50%;">'.format(image_url)
+        # Obtenir le chemin absolu du répertoire actuel
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Spécifier le chemin de l'image relative au répertoire actuel
+        image_path = os.path.join(current_dir, "MagikMalikAvatar.png")
+        rounded_image_html = '<img src="{}" style="border-radius: 50%;">'.format(image_path)
 
         # Afficher le texte avec l'image
         st.markdown("<h1>Magikmalik Match Pred" + rounded_image_html + "ictor</h1>", unsafe_allow_html=True)
