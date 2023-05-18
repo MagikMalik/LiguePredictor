@@ -208,7 +208,7 @@ def main():
                     ML_score_dict = ML_scores(score_matrix, MC_score_tracker)
                     likelyscore = st.container()
 
-                    valubet.markdown('**Scores les plus probable**')
+                    likelyscore.markdown('**Scores les plus probable**')
                     most_likely_score.markdown('**1/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[0],
                                                                                        round(list(ML_score_dict.values())[0], 2)))
                     second_likely_score.markdown('**2/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[1],
