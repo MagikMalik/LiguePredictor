@@ -211,7 +211,7 @@ if st.sidebar.button("Se connecter"):
         st.markdown(
         """
         <style>
-        section[data-testid="stSidebar"] {
+        section[data-testid="stSidebar"],div.stActionButton{
         display: none;
         }
         <style>
@@ -227,7 +227,7 @@ elif username_input == USERNAME and password_input == PASSWORD:
     st.markdown(
     """
     <style>
-    section[data-testid="stSidebar"] {
+    section[data-testid="stSidebar"],div.stActionButton{
     display: none;
     }
     <style>
