@@ -178,19 +178,21 @@ with simulation_engine:
             away_win_row = st.container()
             draw_row = st.container()
 
-            valubet.markdown('**Vérifier par rapport a la cote de votre bookmaker si il y a un valuebet**')
-            home_win_row.markdown('**{}** Probabilité de victoire = {} % (Cote: {})'.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)))
-            away_win_row.markdown('**{}** Probabilité de victoire = {} % (Cote: {})'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)))
-            draw_row.markdown('**Nul** Probabilité du nul = {} % (Cote: {})'.format(round(draw_prob, 1),round(100/draw_prob, 2)))
+            valubet.markdown('**Vérifier par rapport a la cote de votre bookmaker si il y a un valuebet (cad: Cote bookmaker plus élevé)**')
+            home_win_row.markdown('**{}** Probabilité de victoire = **{} % (Cote: {})**'.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)))
+            away_win_row.markdown('**{}** Probabilité de victoire = **{} % (Cote: {})**'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)))
+            draw_row.markdown('**Nul** Probabilité du nul = **{} % (Cote: {})**'.format(round(draw_prob, 1),round(100/draw_prob, 2)))
 
             with top_three_scores:
 
                 most_likely_score, second_likely_score, third_likely_score = st.columns(3)
                 ML_score_dict = ML_scores(score_matrix, MC_score_tracker)
+                likelyscore = st.container()
 
-                most_likely_score.markdown('**1er** Score probable - {}: {} %'.format(list(ML_score_dict.keys())[0],
+                valubet.markdown('**Scores les plus probable**')
+                most_likely_score.markdown('**1/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[0],
                                                                                    round(list(ML_score_dict.values())[0], 2)))
-                second_likely_score.markdown('**2nd** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[1],
+                second_likely_score.markdown('**2/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[1],
                                                                                     round(list(ML_score_dict.values())[1], 2)))
-                third_likely_score.markdown('**3eme** Score le plus probable - {}: {} %'.format(list(ML_score_dict.keys())[2],
+                third_likely_score.markdown('**3/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[2],
                                                                                     round(list(ML_score_dict.values())[2], 2)))
