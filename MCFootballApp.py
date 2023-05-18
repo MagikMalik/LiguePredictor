@@ -7,15 +7,10 @@ import pickle
 import streamlit as st
 
 # Définir les informations d'authentification prédéfinies
-USERNAME = 'betStake'
+USERNAME = 'Betstake'
 PASSWORD = 'init1234'
 
-# Ajouter une zone de saisie pour le nom d'utilisateur et le mot de passe
-username_input = st.sidebar.text_input('Nom d\'utilisateur')
-password_input = st.sidebar.text_input('Mot de passe', type='password')
-
-# Vérifier si les informations d'authentification sont valides
-if username_input == USERNAME and password_input == PASSWORD:
+def main():
     if 'league' not in st.session_state:
         st.session_state['league'] = ''
         st.session_state['home_team'] = ''
@@ -207,6 +202,38 @@ if username_input == USERNAME and password_input == PASSWORD:
                                                                                         round(list(ML_score_dict.values())[1], 2)))
                     third_likely_score.markdown('**3/** Score probable {}: {} %'.format(list(ML_score_dict.keys())[2],
                                                                                         round(list(ML_score_dict.values())[2], 2)))
-else:
-    # Les informations d'authentification sont incorrectes, afficher un message d'erreur
-    st.error('Identifiants invalides. Veuillez réessayer.')
+
+# Ajouter une zone de saisie pour le nom d'utilisateur et le mot de passe
+username_input = st.sidebar.text_input('Nom d\'utilisateur')
+password_input = st.sidebar.text_input('Mot de passe', type='password')
+if st.sidebar.button("Se connecter"):
+    if username_input == USERNAME and password_input == PASSWORD:
+        st.markdown(
+        """
+        <style>
+        section[data-testid="stSidebar"] {
+        display: none;
+        }
+        <style>
+        """,
+        unsafe_allow_html=True
+        )
+        main()
+    else:
+        # Les informations d'authentification sont incorrectes, afficher un message d'erreur
+        if username_input != '' and password_input != '':
+            st.sidebar.error('Identifiants invalides. Veuillez réessayer.')
+elif username_input == USERNAME and password_input == PASSWORD:
+    st.markdown(
+    """
+    <style>
+    section[data-testid="stSidebar"] {
+    display: none;
+    }
+    <style>
+    """,
+    unsafe_allow_html=True
+    )
+    main()
+elif username_input != '' and password_input != '':
+    st.sidebar.error('Identifiants invalides. Veuillez réessayer.')
