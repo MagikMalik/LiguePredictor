@@ -7,11 +7,6 @@ import pickle
 import streamlit as st
 import os
 
-# Définir les informations d'authentification prédéfinies
-USERNAME = 'Betstake'
-PASSWORD = 'init1234'
-USERNAME2 = 'HRP'
-PASSWORD2 = '1H2R3P4'
 def main():
     if 'league' not in st.session_state:
         st.session_state['league'] = ''
@@ -94,14 +89,12 @@ def main():
 
     with header:
         # Obtenir le chemin absolu du répertoire actuel
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Spécifier le chemin de l'image relative au répertoire actuel
-        image_path = os.path.join(current_dir, "MagikMalikAvatar.png")
-        rounded_image_html = '<img src="{}" style="border-radius: 50%;">'.format(image_path)
+        image_url = "https://raw.githubusercontent.com/MagikMalik/LiguePredictor/master/MagikMalikAvatar.png"
+        rounded_image_html = '<img src="{}" style="width:15%;border-radius: 50%;">'.format(image_url)
 
         # Afficher le texte avec l'image
-        st.markdown("<h1>Magikmalik Match Pred" + rounded_image_html + "ictor</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align:center;height: 15px;font-size: 35px;'>Magikmalik Match<h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align:center;height: 70px;font-size: 65px;'>Predict" + rounded_image_html + "r</h1>", unsafe_allow_html=True)
 
         # st.title('MagikMalik Match Predictor')
 
@@ -228,6 +221,11 @@ st.markdown(
     """,
     unsafe_allow_html=True
     )
+# Définir les informations d'authentification prédéfinies
+USERNAME = 'Betstake'
+PASSWORD = 'init1234'
+USERNAME2 = 'HRP'
+PASSWORD2 = '1H2R3P4'
 if st.sidebar.button("Se connecter"):
     if (username_input == USERNAME and password_input == PASSWORD) or (username_input == USERNAME2 and password_input == PASSWORD2):
         st.markdown(
