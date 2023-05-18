@@ -89,7 +89,7 @@ with header:
 
 with league_selector:
     league_col = st.columns(1)[0]
-    league = league_col.selectbox('Choisir une ligue:', options=league_List, index=0)
+    league = league_col.selectbox('Choisir une ligue:', options=sorted(league_List), index=0)
 
     # Mettre à jour les équipes disponibles lorsque la ligue est modifiée
     if st.session_state.league != league:
@@ -103,8 +103,8 @@ with team_selector:
     home_col, away_col = st.columns(2)
     list_team = generate_teamids_dict(CreateNew=False,league=league)
     if hasattr(st.session_state, 'list_team'):
-        home_team = home_col.selectbox('Equipe à domicile:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
-        away_team = away_col.selectbox('Equipe à l\'extérieur:', options=list(list_team.keys()), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
+        home_team = home_col.selectbox('Equipe à domicile:', options=sorted(list(list_team.keys())), index=list(list_team.keys()).index(st.session_state.home_team), key='home_team')
+        away_team = away_col.selectbox('Equipe à l\'extérieur:', options=sorted(list(list_team.keys())), index=list(list_team.keys()).index(st.session_state.away_team), key='away_team')
     else:
         home_team = home_col.selectbox('Equipe à domicile:')
         away_team = away_col.selectbox('Equipe à l\'extérieur:')
