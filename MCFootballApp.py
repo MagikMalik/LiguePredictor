@@ -7,6 +7,11 @@ import pickle
 import streamlit as st
 import os
 
+# Définir les informations d'authentification prédéfinies
+USERNAME = 'Betstake'
+PASSWORD = 'init1234'
+USERNAME2 = 'HRP'
+PASSWORD2 = '1H2R3P4'
 def main():
     if 'league' not in st.session_state:
         st.session_state['league'] = ''
@@ -94,7 +99,7 @@ def main():
 
         # Afficher le texte avec l'image
         st.markdown("<h1 style='text-align:center;height: 15px;font-size: 35px;'>Magikmalik Match<h1>", unsafe_allow_html=True)
-        st.markdown("<h1 style='text-align:center;height: 70px;font-size: 65px;'>Predict" + rounded_image_html + "r</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align:center;height: 110px;font-size: 65px;'>Predict" + rounded_image_html + "r</h1>", unsafe_allow_html=True)
 
         # st.title('MagikMalik Match Predictor')
 
@@ -221,11 +226,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
     )
-# Définir les informations d'authentification prédéfinies
-USERNAME = 'Betstake'
-PASSWORD = 'init1234'
-USERNAME2 = 'HRP'
-PASSWORD2 = '1H2R3P4'
 if st.sidebar.button("Se connecter"):
     if (username_input == USERNAME and password_input == PASSWORD) or (username_input == USERNAME2 and password_input == PASSWORD2):
         st.markdown(
