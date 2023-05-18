@@ -91,7 +91,14 @@ def main():
     list_team = generate_teamids_dict(CreateNew=False,league='La_Liga')
 
     with header:
-        st.title('MagikMalik Match Predictor')
+        # Charger l'image PNG rognée en forme de rond
+        image_url = "MagikMalikAvatar.png"
+        rounded_image_html = '<img src="{}" style="border-radius: 50%;">'.format(image_url)
+
+        # Afficher le texte avec l'image
+        st.markdown("<h1>Magikmalik Match Pred" + rounded_image_html + "ictor</h1>", unsafe_allow_html=True)
+
+        # st.title('MagikMalik Match Predictor')
 
     with league_selector:
         league_col = st.columns(1)[0]
@@ -206,6 +213,16 @@ def main():
 # Ajouter une zone de saisie pour le nom d'utilisateur et le mot de passe
 username_input = st.sidebar.text_input('Nom d\'utilisateur')
 password_input = st.sidebar.text_input('Mot de passe', type='password')
+st.markdown(
+    """
+    <style>
+    div.stActionButton{
+    display: none;
+    }
+    <style>
+    """,
+    unsafe_allow_html=True
+    )
 if st.sidebar.button("Se connecter"):
     if username_input == USERNAME and password_input == PASSWORD:
         st.markdown(
