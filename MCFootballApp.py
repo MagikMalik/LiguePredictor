@@ -173,13 +173,15 @@ with simulation_engine:
 
             #st.dataframe(score_matrix.apply(back_grad))
 
+            valubet = st.container()
             home_win_row = st.container()
             away_win_row = st.container()
             draw_row = st.container()
 
-            home_win_row.markdown('**{}** Probabilité de victoire = {} %'.format(home_team, round(home_win_prob, 1)))
-            away_win_row.markdown('**{}** Probabilité de victoire = {} %'.format(away_team, round(away_win_prob, 1)))
-            draw_row.markdown('**Nul** Probabilité du nul = {} %'.format(round(draw_prob, 1)))
+            valubet.markdown('**Vérifier par rapport a la cote de votre bookmaker si il y a un valuebet**')
+            home_win_row.markdown('**{}** Probabilité de victoire = {} % (Cote: {})'.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)))
+            away_win_row.markdown('**{}** Probabilité de victoire = {} % (Cote: {})'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)))
+            draw_row.markdown('**Nul** Probabilité du nul = {} % (Cote: {})'.format(round(draw_prob, 1),round(100/draw_prob, 2)))
 
             with top_three_scores:
 
