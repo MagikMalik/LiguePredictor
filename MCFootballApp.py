@@ -57,12 +57,12 @@ def main():
         return ML_score_dict
 
     def generate_teamids_dict(CreateNew, league):
-        if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
-            print('Creating New Data Objects')
+        if CreateNew: # Il faudrait créer de nouvelles données d'équipe et un nouveau dictionnaire de données vide au début de chaque saison( CreateNew à True)
+            print('Création de nouveaux objets de données')
             with UnderstatClient() as understat:
-                print('Attempting to Collect API Data...')
+                print('Tentative de collecte des données API...')
                 league_team_data = understat.league(league=league).get_team_data(season="2022")
-                print('Collected API Data Successfully!')
+                print('Données API collectées avec succès !')
             league_ids = {}
 
             for k, v in league_team_data.items():
@@ -71,7 +71,7 @@ def main():
                 league_ids[team_name] = team_id
                 
 
-            print('User Created New (Empty) League Pickle Objects')
+            print('L\'utilisateur a créé de nouveaux objets Pickle de ligue (vides)')
             pickle.dump(league_ids, open(league+"TeamIDs.p", 'wb'))
 
         else:
