@@ -15,12 +15,12 @@ def cumulative_goal_array(i, team_data_dict, team, goals_for, goals_against, xGA
 
 
 def generate_data_dict_and_team_ID_dict(CreateNew,league):
-    if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
-        print('Creating New Data Objects')
+    if CreateNew:
+        print('Création de nouveaux objets de données')
         with UnderstatClient() as understat:
-            print('Attempting to Collect API Data...')
+            print('Tentative de collecte des données API...')
             league_team_data = understat.league(league=league).get_team_data(season="2022")
-            print('Collected API Data Successfully!')
+            print('Données API collectées avec succès !')
         data_dict = {}
         prem_team_ids = {}
 
@@ -43,12 +43,12 @@ def generate_data_dict_and_team_ID_dict(CreateNew,league):
                                      'cxGF': [0.0] * 38,
                                     'played_matches':[float('NaN')] * 38}
 
-        print('User Created New (Empty) Pickle Objects')
+        print('Nouveaux objets Pickle (vides) créés par l\'utilisateur')
         pickle.dump(data_dict, open(league+'DataDict.p', 'wb'))
         pickle.dump(prem_team_ids, open(league+'TeamIDs.p', 'wb'))
 
     else:
-        print('Loading Pickles (Existing Data Objects of Football Stats)')
+        print('Chargement des Pickles (objets de données existants des statistiques de football)')
         prem_team_ids = pickle.load(open(league+"TeamIDs.p", "rb"))
         data_dict = pickle.load(open(league+"DataDict.p", "rb"))
 
@@ -81,23 +81,19 @@ def update_data_dict(team, match, home_name, away_name, data_dict, i):
 
 def stat_creator(league):
 
-    data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=False,league=league) # This loads in the pickle objects. Sequentially update them with just the new GWs data
-
-    # we only want to collect match data from the API once per GW.
-    # In a GW, we run the programme multiple times to get predictions for different games
-    # So, need a flag to tell us when the last time we ran
+    data_dict, prem_team_ids = generate_data_dict_and_team_ID_dict(CreateNew=False,league=league) # Cela charge dans les objets pickle.
 
     if data_dict['updatedate'] < pd.Timestamp.today().date():
-        print('Updating the Data Dictionary With New Stats! Last Update = {}'.format(data_dict))
+        print('Mise à jour du dictionnaire de données avec de nouvelles statistiques ! Dernière mise à jour = {}'.format(data_dict))
         data_dict['updatedate'] = pd.Timestamp.today().date()
         for team in list(prem_team_ids.keys()): # This gets match data
             with UnderstatClient() as understat:
-                print('Attempting to Collect API Data For {}...'.format(team))
+                print('Tentative de collecte des données d\'API pour {}...'.format(team))
                 team_match_data = understat.team(team=team).get_match_data(season="2022")
-                print('Collected API Data Successfully!')
+                print('Données d\'API collectées avec succès')
 
             i=0
-            for match in team_match_data: # Goes through the matches, and builds out cum. arrays for matches that have been played
+            for match in team_match_data: # tableaux pour les matchs qui ont été joués
 
                 if i <= data_dict[team]['gamesPlayed'] - 1:
                     i+=1
@@ -107,15 +103,6 @@ def stat_creator(league):
 
                     home_name = match['h']['title']
                     away_name = match['a']['title']
-
-                    # if, when cycling through matches, a match j games ago (ie a previously postponed game) which previously had isResult as False, now has the isResult parameter as True,
-                    # it means that we have played this postponed game in the GW just gone. So, we check to see if the ID is less than the ID of the most recent
-                    # game before this (as the postponed game was earlier in the season, it will have a lower ID value)
-                    # If this is the case, then we need to put in the (x)GA/F stats into the right part of the cumulative arrays, so we define the idx_to_update parameter
-                    # as, which will be the last entry of the array.
-
-                    # We only expect to encounter this issue when the game being played this current GW is a game which was previously postponed,
-                    # because, if we then go to next week, the array will already have been filled & pickled, which we load in.
 
                     if int(match['id']) < data_dict[team]['played_matches'][data_dict[team]['gamesPlayed'] - 1]: # ie. if the match that has just been played in the fixtures just gone was prev. a postponed game, then we need to insert the stats at the end of the array rather than a prev entry - the end of the array index will be equal to the number of games played, due to 0 indexing arrays ...
                         idx_to_update = data_dict[team]['gamesPlayed']
@@ -129,14 +116,13 @@ def stat_creator(league):
                     i += 1
                     #print(i)
 
-                else: # if match is not result - do not add one to i
+                else: # si la correspondance n'est pas un résultat - ne pas incrémenter i
                     continue
 
-        print('Generated Updated Stats - Now Saving ...')
+        print('Statistiques mises à jour générées - Enregistrement en cours...')
         pickle.dump(data_dict, open(league+'DataDict.p', 'wb'))
-        print('Pickled & Saved UPDATED Team Data Dict Succesfully')
     else:
-        print('No Need To Update Stats Again, as Already Ran The Update Today.')
+        print('Pas besoin de mettre à jour les statistiques à nouveau, car la mise à jour a déjà été effectuée aujourd\'hui.')
 
     return data_dict
 
@@ -164,14 +150,6 @@ def get_weighted_goals(games_lookback, teams, team_data_dict, Use_xG):
 
         for i in range(games_played - games_lookback, games_played):
             opponent_game_i = team_data_dict[team]['opponent'][i]
-            #print('Opponent Game i = {}'.format(opponent_game_i))
-
-            # Weighting Factor gives you a weight calculated as goals our next opponent have concede up to game i / goals the team we played in game i have conceded up to game i.
-            # This weighting then is multiplied by the xG or goals scored by the team of interest in game i.
-            # In this way the weighting scales the xG or goals by how much our next opppnent concedes by ie. a proxy for how good the defense is (and also how poor the attack of our team was on the day too)
-            # For, if we just used Goals or xG as input to a model then, obviously, scoring 3 Vs Man City for example is different to scoring 3 Vs Bournemouth, so the weighting attempts to scale average goal for opponent difficulty
-            # In this example, the 3 scored againt Man City will give you a bigger weighting than the 3 scored Vs bournmeouth  as this is a harder feat
-            # and so may reflect a good teams form at that moment in time, likely to bring into the next game
 
             if team_data_dict[coming_opponent]['cGA'][i-1] == 0 or team_data_dict[opponent_game_i]['cGA'][i-1] == 0:
                 weighting_factor = 1
@@ -180,12 +158,9 @@ def get_weighted_goals(games_lookback, teams, team_data_dict, Use_xG):
 
                 #weighting_factor = team_data_dict[coming_opponent]['cGA'][i] / team_data_dict[opponent_game_i]['cGA'][i]
 
-            # Apply a transformation to make the weightings realistic (eg. a 2.5 multiplier is (most likely) too large)
+            # Appliquer une transformation pour rendre les pondérations réalistes (par exemple, un multiplicateur de 2,5 est (très probablement) trop grand)
             transformation = lambda x : (1/(1+np.exp(-4*(x-1))) + 0.5) if (x-1) < 0 else np.tanh(0.8*(x-1))+1
             transformed_weight = transformation(weighting_factor)
-
-            # The weighting factor is based of the prev GW's stats. We then multiply this weighting factor by the goals scored in
-            # the current GWs to 'scale' for strength-adjusted goals.
 
             wtd_goal += transformed_weight * team_data_dict[team]['{}F'.format(goal_type)][i] # multiply the weighting factor by the number of goals scored by the team in question against the opponent in game i
             wtd_goal_series[team].append(wtd_goal)
@@ -196,13 +171,13 @@ def get_weighted_goals(games_lookback, teams, team_data_dict, Use_xG):
             avg_wtd_goal_AwayTeam = wtd_goal / games_lookback
         print(team)
     if avg_wtd_goal_HomeTeam == 0.0 or avg_wtd_goal_AwayTeam == 0.0:
-        raise ValueError('The Weighted Average Goals Were Not Computed Correctly For the Teams in Question/' + teams[0]+'/'+teams[1]+'/'+str(games_lookback)+'/'+str(games_played)+'/'+str(wtd_goal))
+        raise ValueError('Les buts moyens pondérés n\'ont pas été calculés correctement pour les équipes en question/' + teams[0]+'/'+teams[1]+'/'+str(games_lookback)+'/'+str(games_played)+'/'+str(wtd_goal))
 
     return avg_wtd_goal_HomeTeam, avg_wtd_goal_AwayTeam, wtd_goal_series
 
 
 def get_goal_covariance(wtd_goal_series, teams):
-    # Use the weighted goal series to get the covariance between the series !
+    # Utilise la série d'objectifs pondérés pour obtenir la covariance entre les séries
     home_wtd_goal_series = wtd_goal_series[teams[0]]
     away_wtd_goal_series = wtd_goal_series[teams[1]]
 
@@ -210,6 +185,6 @@ def get_goal_covariance(wtd_goal_series, teams):
         l3 = float('NaN')
     else:
         C = np.cov(home_wtd_goal_series, away_wtd_goal_series)
-        l3 = C[0][1] # The covariance parameter in the Biv Po distr
+        l3 = C[0][1] # Le paramètre de covariance dans la distribution Poisson Biv
     return l3
 
