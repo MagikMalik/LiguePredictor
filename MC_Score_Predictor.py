@@ -17,9 +17,9 @@ def BivariatePoissonProb(x, y, l1, l2, l3):
     return round(prob,2)
 
 
-# function to generate the probability distribution for home_Gf and away_Gf (and l3), then sample from it to get integers
+# fonction pour générer la distribution de probabilité pour home_Gf et away_Gf (et l3), puis échantillonner à partir de celle-ci pour obtenir des nombres entiers
 def GenerateProbDistr(l1, l2, l3):
-    # x, y can be thought of as a co-ordinate set of all possible score combinations for a match
+    # x, y peut être considéré comme un ensemble de coordonnées de toutes les combinaisons de scores possibles pour un match
     x = np.linspace(0,5,6)
     y = np.linspace(0,5,6)
 
@@ -62,11 +62,11 @@ def print_results(func, teams):
     score_matrix = buildScoreMatrix(MC_score_tracker, teams, x, y)
 
     print('-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-')
-    print('{} Win = {} % \n{} Win = {} % \nDraw = {} %'.format(teams[0], round(home_win_prob, 3),
+    print('{} Gagne = {} % \n{} Gagne = {} % \nNul = {} %'.format(teams[0], round(home_win_prob, 3),
                                                                teams[1], round(away_win_prob, 3),
                                                                round(draw_prob, 3)))
     print('-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-')
-    print('Scorelines with highest chance:')
+    print('Scores les plus probables:')
 
     remove_max_score = lambda x, max_likelihood_score: x.pop(max_likelihood_score)
     max_likelihood_score = lambda x: max(x, key=x.get)
@@ -76,25 +76,25 @@ def print_results(func, teams):
     ML_percent = max_likelihood_percent(MC_score_tracker)
     ML_score_dict[ML_score] = ML_percent
 
-    print('1/ {} with {}%'.format(ML_score, ML_percent/10000))
+    print('1/ {} avec {}%'.format(ML_score, ML_percent/10000))
 
     remove_max_score(MC_score_tracker, ML_score)
     ML_score = max_likelihood_score(MC_score_tracker)
     ML_percent = max_likelihood_percent(MC_score_tracker)
     ML_score_dict[ML_score] = ML_percent
 
-    print('2/ {} with {} %'.format(ML_score, ML_percent/10000))
+    print('2/ {} avec {} %'.format(ML_score, ML_percent/10000))
 
     remove_max_score(MC_score_tracker, ML_score)
     ML_score = max_likelihood_score(MC_score_tracker)
     ML_percent = max_likelihood_percent(MC_score_tracker)
     ML_score_dict[ML_score] = ML_percent
 
-    print('3/ {} with {} %'.format(ML_score, ML_percent/10000))
+    print('3/ {} avec {} %'.format(ML_score, ML_percent/10000))
 
     print('-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-')
-    print('Odds:')
-    print('{} Win = {}:1 \n{} Win = {}:1 \nDraw = {}:1'.format(teams[0], round(100 / home_win_prob - 1, 2),
+    print('Cotes:')
+    print('{} Gagne = {}:1 \n{} Gagne = {}:1 \nNul = {}:1'.format(teams[0], round(100 / home_win_prob - 1, 2),
                                                                teams[1], round(100 / away_win_prob - 1, 2),
                                                                round(100 / draw_prob - 1, 2)))
     return score_matrix, ML_score_dict
@@ -110,16 +110,14 @@ def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
 
     goal_covariance = get_goal_covariance(wtd_goal_series, teams)
     l3 = goal_covariance
-    print('cov BEFORE condition: {}'.format(l3))
-
     l3 = 0.1 #if (l3 > 0.3 or l3 == float('NaN')) else l3
 
     print('\n')
-    print('Got Weighted Goals... Now Running Monte Carlo Simulation')
+    print('En cours d\'exécution de la simulation de Monte Carlo')
     print('\n')
-    print('{} avg weighted goals = {}'.format(teams[0], avg_weighted_goals_HomeTeam))
-    print('{} avg weighted goals = {}'.format(teams[1], avg_weighted_goals_AwayTeam))
-    print('goal cov = {}'.format(l3))
+    print('{} objectifs pondérés moyens = {}'.format(teams[0], avg_weighted_goals_HomeTeam))
+    print('{} objectifs pondérés moyens = {}'.format(teams[1], avg_weighted_goals_AwayTeam))
+    print('Objectif cov = {}'.format(l3))
     print('\n')
 
     score_prob_dict, x, y = GenerateProbDistr(round(avg_weighted_goals_HomeTeam,2), round(avg_weighted_goals_AwayTeam,2), l3)
@@ -145,8 +143,3 @@ def MonteCarloMatchSim(teams, iterations, GamesLookback, BaseOnxG,league):
     draw_prob = round(100 - home_win_prob - away_win_prob,2)
 
     return round(home_win_prob,2), round(away_win_prob,2), round(draw_prob,2), MC_score_tracker, x, y, round(avg_weighted_goals_HomeTeam,2), round(avg_weighted_goals_AwayTeam,2)
-
-    #present scores in a nice matrix of probabilities
-    #convert to odds
-
-#home_win_prob, away_win_prob, draw_prob = MonteCarloMatchSim(['Manchester City', 'Tottenham'], 100000, GamesLookback=3, BaseOnxG=False)
