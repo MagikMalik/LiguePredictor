@@ -32,6 +32,7 @@ def main():
     score_probabilities = st.container()
     team_win_probabilities = st.container()
 
+    predictcote = st.container()
     top_three_scores = st.container()
 
 
@@ -57,12 +58,12 @@ def main():
         return ML_score_dict
 
     def generate_teamids_dict(CreateNew, league):
-        if CreateNew: # Il faudrait créer de nouvelles données d'équipe et un nouveau dictionnaire de données vide au début de chaque saison( CreateNew à True)
-            print('Création de nouveaux objets de données')
+        if CreateNew: # Create new prem league team data, and a new empty data dictionary - set CreateNew to True at the start of each season
+            print('Creating New Data Objects')
             with UnderstatClient() as understat:
-                print('Tentative de collecte des données API...')
+                print('Attempting to Collect API Data...')
                 league_team_data = understat.league(league=league).get_team_data(season="2022")
-                print('Données API collectées avec succès !')
+                print('Collected API Data Successfully!')
             league_ids = {}
 
             for k, v in league_team_data.items():
@@ -71,7 +72,7 @@ def main():
                 league_ids[team_name] = team_id
                 
 
-            print('L\'utilisateur a créé de nouveaux objets Pickle de ligue (vides)')
+            print('User Created New (Empty) League Pickle Objects')
             pickle.dump(league_ids, open(league+"TeamIDs.p", 'wb'))
 
         else:
@@ -193,13 +194,13 @@ def main():
                 #st.dataframe(score_matrix.apply(back_grad))
 
                 valubet = st.container()
-                home_win_row , draw_row, away_win_row = st.column(3)
+                valubet.markdown('<span style="font-family:Arial;font-weight:bold;font-size:14px;">Prédiction pour le match </span><span style="font-family:Arial; color:Red; font-size: 10px;">Vérifier par rapport a la cote de votre bookmaker si il y a un valuebet (cad: Cote bookmaker plus élevé)</span>', unsafe_allow_html=True)
+                with predictcote:
+                    home_win_row, draw_row, away_win_row = st.columns(3)
 
-                valubet.markdown('**Vérifier par rapport a la cote de votre bookmaker si il y a un valuebet (cad: Cote bookmaker plus élevé)**')
-                home_win_row.markdown('**{}** - **{} % (Cote: {})**  |  '.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)))
-                draw_row.markdown('**Nul** - **{} % (Cote: {})**  |  '.format(round(draw_prob, 1),round(100/draw_prob, 2)))
-                away_win_row.markdown('**{}** - **{} % (Cote: {})**'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)))
-                
+                    home_win_row.markdown('{}/ **{} % (Cote: {})**'.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)), unsafe_allow_html=True)
+                    draw_row.markdown('Nul / **{} % (Cote: {})**'.format(round(draw_prob, 1),round(100/draw_prob, 2)), unsafe_allow_html=True)
+                    away_win_row.markdown('{} / **{} % (Cote: {})**'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)), unsafe_allow_html=True)
 
                 with top_three_scores:
 
