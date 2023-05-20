@@ -193,14 +193,13 @@ def main():
                 #st.dataframe(score_matrix.apply(back_grad))
 
                 valubet = st.container()
-                home_win_row = st.container()
-                away_win_row = st.container()
-                draw_row = st.container()
+                home_win_row , draw_row, away_win_row = st.column(3)
 
                 valubet.markdown('**Vérifier par rapport a la cote de votre bookmaker si il y a un valuebet (cad: Cote bookmaker plus élevé)**')
-                home_win_row.markdown('**{}** Probabilité de victoire = **{} % (Cote: {})**'.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)))
-                away_win_row.markdown('**{}** Probabilité de victoire = **{} % (Cote: {})**'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)))
-                draw_row.markdown('**Nul** Probabilité du nul = **{} % (Cote: {})**'.format(round(draw_prob, 1),round(100/draw_prob, 2)))
+                home_win_row.markdown('**{}** - **{} % (Cote: {})**  |  '.format(home_team, round(home_win_prob, 1), round(100/home_win_prob, 2)))
+                draw_row.markdown('**Nul** - **{} % (Cote: {})**  |  '.format(round(draw_prob, 1),round(100/draw_prob, 2)))
+                away_win_row.markdown('**{}** - **{} % (Cote: {})**'.format(away_team, round(away_win_prob, 1), round(100/away_win_prob, 2)))
+                
 
                 with top_three_scores:
 
